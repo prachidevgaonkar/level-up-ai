@@ -124,7 +124,7 @@ level-up-ai/
 │
 └── interactive/
     ├── ai_adoption_gamification.html  ← Interactive dark-mode framework viewer
-    └── ai_adoption_gamification_book.html ← Book-page edition (print-friendly)
+    └── index.html ← Book-page edition (print-friendly)
 ```
 
 ---
