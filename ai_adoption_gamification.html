@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Adoption · Gamification Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f;--bg2:#0d1117;--bg3:#131820;
+  --ai:#6366f1;--ai2:#818cf8;--ai3:#c7d2fe;
+  --green:#10b981;--amber:#f59e0b;--rose:#f43f5e;--cyan:#06b6d4;
+  --text:#f1f5f9;--muted:#64748b;--border:rgba(99,102,241,0.18);
+}
+body{margin:0;background:#04060b;font-family:'Inter',sans-serif;color:var(--text);padding:32px 0 60px}
+.wrap{max-width:740px;margin:0 auto;padding:0 24px}
+
+/* HERO */
+.hero{text-align:center;padding:52px 0 44px;border-bottom:1px solid var(--border);margin-bottom:36px;position:relative}
+.hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,0.12),transparent 70%)}
+.ai-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:20px;padding:6px 18px;margin-bottom:22px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ai2);position:relative;z-index:1}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:42px;font-weight:900;line-height:1.1;letter-spacing:-1.5px;position:relative;z-index:1}
+.hero h1 .g{background:linear-gradient(135deg,#6366f1,#06b6d4,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .w{color:#fff;font-size:26px;font-weight:300;letter-spacing:3px;display:block;margin-top:4px}
+.hero-sub{font-size:15px;color:var(--muted);max-width:480px;margin:16px auto 32px;line-height:1.8;position:relative;z-index:1}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative;z-index:1}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 14px;text-align:center}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;margin-bottom:4px}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.stat-bar{height:3px;border-radius:2px;margin-top:10px}
+
+/* Section */
+.sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ai);margin-bottom:8px;opacity:.85}
+.sec-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:10px;letter-spacing:-.3px}
+.prose{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:16px}
+.divider{height:1px;background:var(--border);margin:32px 0}
+
+/* Why cards */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0}
+.why-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px}
+.why-ico{font-size:24px;margin-bottom:8px}
+.why-t{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px}
+.why-d{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* Quest modules */
+.module{background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s;overflow:hidden}
+.module:hover{border-color:rgba(99,102,241,0.4);transform:translateY(-1px)}
+.module-head{display:flex;align-items:center;gap:12px;padding:16px 20px}
+.module-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.module-meta{flex:1}
+.module-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:3px}
+.module-sub{font-size:12px;color:var(--muted)}
+.module-xp{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 12px;border-radius:20px;border:1px solid;white-space:nowrap;font-weight:700}
+.module-arrow{font-size:11px;color:var(--muted);margin-left:8px;transition:transform .25s;flex-shrink:0}
+.module-body{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s;padding:0 20px}
+.module-body.open{max-height:220px;padding:0 20px 20px;border-top:1px solid var(--border)}
+.module-desc{font-size:13px;color:var(--muted);line-height:1.7;margin:14px 0 12px}
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px}
+.skill-tag{font-size:10px;font-weight:500;background:rgba(99,102,241,0.1);color:var(--ai2);border:1px solid rgba(99,102,241,0.2);border-radius:20px;padding:3px 10px}
+
+/* Score grid */
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.score-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 10px;text-align:center;position:relative;overflow:hidden}
+.score-card.top{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(6,182,212,0.1));border-color:rgba(99,102,241,0.4)}
+.score-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.score-pts{font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.score-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+.score-bar{position:absolute;bottom:0;left:0;right:0;height:3px}
+
+/* Levels */
+.level-track{position:relative;padding:12px 0 16px}
+.level-line{position:absolute;top:34px;left:0;right:0;height:1px;background:rgba(99,102,241,0.1)}
+.level-fill{position:absolute;top:34px;left:0;height:1px;background:linear-gradient(90deg,var(--ai),var(--cyan));width:0%;transition:width 1.5s ease;box-shadow:0 0 6px rgba(99,102,241,.4)}
+.levels{display:flex;justify-content:space-between;position:relative;z-index:2}
+.level{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;max-width:90px}
+.level-orb{width:48px;height:48px;border-radius:50%;border:2px solid rgba(99,102,241,0.2);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.level.active .level-orb{border-color:var(--ai);box-shadow:0 0 20px rgba(99,102,241,.4)}
+.level:hover .level-orb{transform:translateY(-3px)}
+.level-title{font-size:10px;font-weight:600;color:var(--muted);text-align:center;letter-spacing:.5px;text-transform:uppercase}
+.level.active .level-title{color:var(--ai2)}
+.level-pts{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber)}
+.level-info{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:12px;font-size:14px;color:var(--muted);line-height:1.7;min-height:72px}
+.level-info strong{color:#fff}
+
+/* Metrics */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px}
+.metric-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.metric-name{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.metric-ico{font-size:18px}
+.metric-val{font-size:30px;font-weight:900;font-family:'JetBrains Mono',monospace;margin-bottom:5px}
+.metric-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.metric-bar{height:3px;border-radius:2px;margin-top:12px}
+
+/* Laws */
+.law{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px;display:flex;align-items:flex-start;gap:14px}
+.law-n{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(99,102,241,0.1);color:var(--ai2);border:1px solid rgba(99,102,241,0.2);border-radius:6px;padding:3px 8px;flex-shrink:0;margin-top:2px}
+.law-t{font-size:13px;color:var(--muted);line-height:1.6}
+.law-t strong{color:var(--text);font-weight:600}
+
+/* Outcomes */
+.out-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.out-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 14px;text-align:center}
+.out-ico{font-size:26px;margin-bottom:8px}
+.out-t{font-size:12px;font-weight:600;color:#fff;margin-bottom:5px}
+.out-d{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(6,182,212,0.08));border:1px solid rgba(99,102,241,0.28);border-radius:18px;padding:36px 32px;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(99,102,241,0.1),transparent 65%);pointer-events:none}
+.cta-t{font-size:24px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.3px;position:relative}
+.cta-d{font-size:14px;color:var(--muted);line-height:1.75;max-width:440px;margin:0 auto;position:relative}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="ai-badge"><div class="dot"></div>AI Adoption Initiative · Season 01</div>
+  <h1>
+    <span class="g">Level Up with AI</span>
+    <span class="w">The Gamification Framework</span>
+  </h1>
+  <p class="hero-sub">Transform AI adoption from a top-down mandate into a bottom-up movement. Earn XP. Unlock ranks. Build an AI-native team — one workflow at a time.</p>
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-val" style="color:var(--ai2)">78%</div>
+      <div class="stat-lbl">Tool Activation</div>
+      <div class="stat-bar" style="background:linear-gradient(90deg,var(--ai),var(--ai2))"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--cyan)">4.2h</div>
+      <div class="stat-lbl">Saved / Week</div>
+      <div class="stat-bar" style="background:linear-gradient(90deg,var(--cyan),#67e8f9)"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--green)">12</div>
+      <div class="stat-lbl">Workflows Rebuilt</div>
+      <div class="stat-bar" style="background:linear-gradient(90deg,var(--green),#6ee7b7)"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--amber)">930</div>
+      <div class="stat-lbl">Guild XP</div>
+      <div class="stat-bar" style="background:linear-gradient(90deg,var(--amber),#fcd34d)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY -->
+<div class="sec-eyebrow">Module 0 · Foundation</div>
+<div class="sec-title">Why Gamify AI Adoption?</div>
+<p class="prose">AI adoption fails when it feels like a compliance exercise. It thrives when it feels like levelling up. By attaching XP, ranks, leaderboards, and rewards to AI learning and usage behaviours, organisations unlock the intrinsic motivation that makes AI stick — not just spike.</p>
+<div class="why-grid">
+  <div class="why-card"><div class="why-ico">🧠</div><div class="why-t">Intrinsic drive</div><div class="why-d">People adopt AI when it feels empowering, not enforced.</div></div>
+  <div class="why-card"><div class="why-ico">📊</div><div class="why-t">Visible progress</div><div class="why-d">Leaderboards surface AI champions and identify those needing support.</div></div>
+  <div class="why-card"><div class="why-ico">🔁</div><div class="why-t">Habit formation</div><div class="why-d">Repeated AI use turns novelty into muscle memory across the org.</div></div>
+  <div class="why-card"><div class="why-ico">🏆</div><div class="why-t">Peer influence</div><div class="why-d">Public recognition of AI champions creates organic pull across teams.</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- QUESTS -->
+<div class="sec-eyebrow">Modules 1–6 · Core Quests</div>
+<div class="sec-title">The Six AI Adoption Quests</div>
+<p class="prose">Each quest targets a specific AI adoption behaviour. XP scales from awareness to transformational impact. Click any quest to expand its scroll.</p>
+<div id="modules"></div>
+
+<div class="divider"></div>
+
+<!-- SCORING -->
+<div class="sec-eyebrow">XP Engine</div>
+<div class="sec-title">How Adoption XP Is Earned</div>
+<p class="prose" style="margin-bottom:0">Every AI behaviour maps to a stage. Talking about AI earns a foothold. Permanently changing how your team works earns real power.</p>
+<div class="score-grid">
+  <div class="score-card"><div class="score-bar" style="background:#334155"></div><div class="score-badge">Aware</div><div class="score-pts" style="color:var(--muted)">10</div><div class="score-lbl">Know it exists</div></div>
+  <div class="score-card"><div class="score-bar" style="background:linear-gradient(90deg,var(--ai),var(--ai2))"></div><div class="score-badge">Try</div><div class="score-pts" style="color:var(--ai2)">25</div><div class="score-lbl">First-time use</div></div>
+  <div class="score-card"><div class="score-bar" style="background:linear-gradient(90deg,var(--cyan),#67e8f9)"></div><div class="score-badge">Integrate</div><div class="score-pts" style="color:var(--cyan)">75</div><div class="score-lbl">Into workflow</div></div>
+  <div class="score-card top"><div class="score-bar" style="background:linear-gradient(90deg,var(--green),#6ee7b7)"></div><div class="score-badge">Scale</div><div class="score-pts" style="color:var(--green)">300</div><div class="score-lbl">Team-wide impact</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LEVELS -->
+<div class="sec-eyebrow">Rank Progression</div>
+<div class="sec-title">AI Mastery Levels</div>
+<p class="prose" style="margin-bottom:0">Six ranks mark the journey from AI-curious to AI-sovereign. Each unlocks new recognition, privileges, and rewards.</p>
+<div class="level-track">
+  <div class="level-line"></div>
+  <div class="level-fill" id="lv-fill"></div>
+  <div class="levels" id="levels"></div>
+</div>
+<div class="level-info" id="lv-info">👆 Select a level above to see what it unlocks.</div>
+
+<div class="divider"></div>
+
+<!-- METRICS -->
+<div class="sec-eyebrow">What Gets Measured</div>
+<div class="sec-title">AI Adoption Metrics That Matter</div>
+<p class="prose">The scoreboard tracks outcomes, not just activity. These four metrics define what winning looks like for the organisation.</p>
+<div class="metrics-grid">
+  <div class="metric"><div class="metric-top"><div class="metric-name">Tool Activation</div><div class="metric-ico">⚡</div></div><div class="metric-val" style="color:var(--ai2)">78%</div><div class="metric-desc">% of team members using at least one AI tool weekly</div><div class="metric-bar" style="background:linear-gradient(90deg,var(--ai),var(--ai2));width:78%"></div></div>
+  <div class="metric"><div class="metric-top"><div class="metric-name">Time Saved</div><div class="metric-ico">⏱️</div></div><div class="metric-val" style="color:var(--cyan)">4.2h</div><div class="metric-desc">Average hours saved per person per week through AI</div><div class="metric-bar" style="background:linear-gradient(90deg,var(--cyan),#67e8f9);width:62%"></div></div>
+  <div class="metric"><div class="metric-top"><div class="metric-name">Workflows Rebuilt</div><div class="metric-ico">🔄</div></div><div class="metric-val" style="color:var(--green)">12</div><div class="metric-desc">Workflows permanently redesigned with AI this quarter</div><div class="metric-bar" style="background:linear-gradient(90deg,var(--green),#6ee7b7);width:55%"></div></div>
+  <div class="metric"><div class="metric-top"><div class="metric-name">AI Champions</div><div class="metric-ico">🏆</div></div><div class="metric-val" style="color:var(--amber)">9</div><div class="metric-desc">Team members who have reached Innovator rank or above</div><div class="metric-bar" style="background:linear-gradient(90deg,var(--amber),#fcd34d);width:45%"></div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LAWS -->
+<div class="sec-eyebrow">Governance</div>
+<div class="sec-title">How the Program Runs</div>
+<p class="prose">Eight operating principles keep the AI adoption game fair, focused, and genuinely motivating across all squads.</p>
+<div id="laws"></div>
+
+<div class="divider"></div>
+
+<!-- OUTCOMES -->
+<div class="sec-eyebrow">Impact</div>
+<div class="sec-title">What This Framework Delivers</div>
+<div class="out-grid" style="margin-bottom:28px">
+  <div class="out-card"><div class="out-ico">🚀</div><div class="out-t">Faster Adoption</div><div class="out-d">XP loops cut AI adoption time from months to weeks</div></div>
+  <div class="out-card"><div class="out-ico">🧠</div><div class="out-t">Deeper Skills</div><div class="out-d">Structured quests build genuine capability, not surface familiarity</div></div>
+  <div class="out-card"><div class="out-ico">📈</div><div class="out-t">Measurable ROI</div><div class="out-d">Tracked metrics tie adoption directly to business outcomes</div></div>
+  <div class="out-card"><div class="out-ico">🤝</div><div class="out-t">Culture Shift</div><div class="out-d">Champions create peer pull that no mandate could replicate</div></div>
+  <div class="out-card"><div class="out-ico">⚡</div><div class="out-t">Speed at Scale</div><div class="out-d">Leaderboards surface what works fast — and spread it faster</div></div>
+  <div class="out-card"><div class="out-ico">🔮</div><div class="out-t">Future-Readiness</div><div class="out-d">Teams that play the game emerge genuinely AI-native</div></div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="cta-t">🤖 Ready to Launch Your AI Adoption Game?</div>
+  <p class="cta-d">Define your quests. Set your XP values. Publish your leaderboard. The teams that gamify their AI journey don't just adopt AI — they master it.</p>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+const modules=[
+  {ico:'🤖',color:'rgba(99,102,241,0.15)',xpC:'#818cf8',xpB:'rgba(99,102,241,0.3)',pts:'Up to 300 XP',name:'AI Tool Exploration',sub:'Discover and activate AI tools relevant to your role',desc:'Earn XP by discovering, trialling, and onboarding AI tools. Points scale from awareness (logging a new tool) through to 30+ consecutive days of active weekly usage. First tool activated = 25 XP. Full 30-day streak = 150 XP.',tags:['Tool discovery','First-time use','30-day streak','Usage logging']},
+  {ico:'⚡',color:'rgba(6,182,212,0.12)',xpC:'#06b6d4',xpB:'rgba(6,182,212,0.3)',pts:'Up to 300 XP',name:'Workflow Integration',sub:'Permanently embed AI into how you actually work',desc:'The real measure of adoption is behaviour change. XP is awarded for mapping existing workflows, identifying AI insertion points, piloting AI-assisted versions, and documenting measurable time savings after permanent adoption.',tags:['Workflow mapping','AI pilot','Time savings doc','Permanent adoption']},
+  {ico:'🧠',color:'rgba(16,185,129,0.12)',xpC:'#10b981',xpB:'rgba(16,185,129,0.3)',pts:'Up to 200 XP',name:'Prompt Engineering',sub:'Level up your human-AI communication skills',desc:'Quality of AI output depends entirely on quality of input. Rewards structured prompt learning, sharing high-performing prompts in the team library, and publishing documented before/after comparisons showing prompt impact.',tags:['Prompt techniques','Team prompt library','Before/after docs','Iteration logs']},
+  {ico:'📢',color:'rgba(245,158,11,0.12)',xpC:'#f59e0b',xpB:'rgba(245,158,11,0.3)',pts:'Up to 150 XP',name:'AI Evangelism',sub:'Spread AI capability through your team',desc:'Champions accelerate adoption faster than any training programme. XP awarded for running internal demos, mentoring colleagues 1:1, presenting AI wins at team meetings, and publishing internal case studies.',tags:['Internal demos','Peer mentoring','Case studies','AI showcases']},
+  {ico:'📚',color:'rgba(244,63,94,0.12)',xpC:'#f43f5e',xpB:'rgba(244,63,94,0.3)',pts:'Up to 150 XP',name:'Continuous Learning',sub:'Certify, upskill, and stay current with AI',desc:'The AI landscape evolves weekly. Earn XP for completing AI literacy courses, earning vendor certifications (e.g. Microsoft AI, Google AI Essentials), attending webinars, and sharing key learnings with the broader team.',tags:['AI certifications','Course completions','Webinar attendance','Knowledge sharing']},
+  {ico:'🛡️',color:'rgba(100,116,139,0.1)',xpC:'#64748b',xpB:'rgba(100,116,139,0.3)',pts:'−15 XP / breach',name:'Responsible AI Use',sub:'Ethics, safety, data privacy, and compliance',desc:'AI power comes with responsibility. This pillar enforces data privacy norms, prevents unsanctioned tool usage on sensitive data, and ensures AI outputs are reviewed before being used in client or business contexts. Breaches incur XP deductions.',tags:['Data privacy','Approved tools only','Output review','Ethics compliance']},
+];
+
+const mEl=document.getElementById('modules');
+modules.forEach((m,i)=>{
+  mEl.innerHTML+=`<div class="module" id="mc${i}" onclick="tm(${i})" style="border-left:3px solid ${m.xpB}">
+    <div class="module-head">
+      <div class="module-icon" style="background:${m.color}">${m.ico}</div>
+      <div class="module-meta"><div class="module-name">${m.name}</div><div class="module-sub">${m.sub}</div></div>
+      <div class="module-xp" style="color:${m.xpC};border-color:${m.xpB};background:${m.color}">${m.pts}</div>
+      <div class="module-arrow" id="ma${i}">▼</div>
+    </div>
+    <div class="module-body" id="mb${i}">
+      <p class="module-desc">${m.desc}</p>
+      <div class="skill-tags">${m.tags.map(t=>`<span class="skill-tag">${t}</span>`).join('')}</div>
+    </div>
+  </div>`;
+});
+function tm(i){const b=document.getElementById('mb'+i),a=document.getElementById('ma'+i),o=b.classList.toggle('open');a.style.transform=o?'rotate(180deg)':'';}
+
+const levelData=[
+  {ico:'🌱',title:'Curious',pts:'100 XP',info:'<strong>Curious</strong> · You\'ve taken your first steps. At least one tool tried, onboarding completed, first prompt logged. Recognition: internal shoutout + Curious badge on your profile.'},
+  {ico:'⚡',title:'Explorer',pts:'300 XP',info:'<strong>Explorer</strong> · Actively discovering AI\'s potential. Multiple tools activated, first workflow mapped, prompts being refined. Recognition: team leaderboard feature + Explorer digital badge.'},
+  {ico:'🔧',title:'Integrator',pts:'600 XP',info:'<strong>Integrator</strong> · AI is now part of how you work. At least one workflow permanently redesigned, prompt library contributions made, first peer mentoring session delivered. Recognition: all-hands spotlight + reward package.'},
+  {ico:'🚀',title:'Innovator',pts:'1000 XP',info:'<strong>Innovator</strong> · Driving AI transformation. Multiple workflows redesigned, team demos delivered, measurable time savings documented and shared. Recognition: AI Champion title + priority access to new tools + rewards.'},
+  {ico:'🧠',title:'Champion',pts:'1400 XP',info:'<strong>Champion</strong> · An AI leader across the organisation. Certifications earned, case studies published, peers formally mentored. Recognition: executive visibility + client showcase opportunity + premium reward tier.'},
+  {ico:'👑',title:'Sovereign',pts:'2000 XP',info:'<strong>AI Sovereign</strong> · The highest rank. You have fundamentally transformed how your team operates with AI. Named champion, featured in company and client comms, enshrined on the AI Hall of Fame.'},
+];
+const lvEl=document.getElementById('levels');
+const lvInfo=document.getElementById('lv-info');
+levelData.forEach((l,i)=>{
+  lvEl.innerHTML+=`<div class="level" id="lv${i}" onclick="sl(${i})"><div class="level-orb">${l.ico}</div><div class="level-title">${l.title}</div><div class="level-pts">${l.pts}</div></div>`;
+});
+function sl(i){
+  levelData.forEach((_,j)=>document.getElementById('lv'+j).classList.toggle('active',j===i));
+  lvInfo.innerHTML=levelData[i].info;
+  document.getElementById('lv-fill').style.width=(((i+1)/levelData.length)*100)+'%';
+}
+
+const laws=[
+  {t:'Squad-based competition',d:'Employees are grouped into squads of 6–10. Each squad competes to accumulate the most AI Adoption XP across all six quests throughout the season.'},
+  {t:'Weekly XP submissions',d:'Squad leads log evidence of AI adoption activities — screenshots, workflow docs, time-saving reports — every Friday in the shared AI Adoption Tracker.'},
+  {t:'AI Adoption Managers',d:'Each squad has a dedicated AI Adoption Manager who validates evidence, coaches members who are falling behind, and ensures fair XP allocation.'},
+  {t:'Monthly jury review',d:'A cross-functional panel reviews squad progress monthly, validating impact claims and consulting business stakeholders before XP is finalised.'},
+  {t:'Live leaderboard',d:'Squad and individual rankings are published on the internal AI Adoption Hub every Monday — real-time visibility across the entire organisation.'},
+  {t:'Monthly reward drops',d:'Top XP earners receive recognition, exclusive early access to new AI tools, gift packages, and formal citations at monthly all-hands sessions.'},
+  {t:'Wildcard quests',d:'Surprise challenges, bonus XP events, and AI hackathons are introduced mid-season to keep energy high and surface unexpected champions.'},
+  {t:'AI Hall of Fame',d:'At season close, top performers are permanently featured in the AI Hall of Fame — visible to all employees, leadership, and key clients.'},
+];
+const lEl=document.getElementById('laws');
+laws.forEach((l,i)=>{
+  lEl.innerHTML+=`<div class="law"><div class="law-n">${String(i+1).padStart(2,'0')}</div><div class="law-t"><strong>${l.t}.</strong> ${l.d}</div></div>`;
+});
+</script>
+</body>
+</html>
